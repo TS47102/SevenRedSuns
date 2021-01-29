@@ -852,7 +852,7 @@ MonoBehaviour:
   ActiveTarget: {fileID: 0}
   IdealTarget: {fileID: 2022574612}
   StepLength: 6
-  StepHeight: 1
+  StepHeight: 1.5
   StepSpeed: 25
   StepTolerance: 0.05
 --- !u!114 &1677479289
@@ -870,7 +870,7 @@ MonoBehaviour:
   ActiveTarget: {fileID: 0}
   IdealTarget: {fileID: 1469632813}
   StepLength: 6
-  StepHeight: 1
+  StepHeight: 1.5
   StepSpeed: 25
   StepTolerance: 0.05
 --- !u!114 &1677479290
@@ -888,7 +888,7 @@ MonoBehaviour:
   ActiveTarget: {fileID: 0}
   IdealTarget: {fileID: 302835420}
   StepLength: 6
-  StepHeight: 1
+  StepHeight: 1.5
   StepSpeed: 25
   StepTolerance: 0.05
 --- !u!114 &1677479291
@@ -906,7 +906,7 @@ MonoBehaviour:
   ActiveTarget: {fileID: 0}
   IdealTarget: {fileID: 335525791}
   StepLength: 6
-  StepHeight: 1
+  StepHeight: 1.5
   StepSpeed: 25
   StepTolerance: 0.05
 --- !u!1 &1687258581

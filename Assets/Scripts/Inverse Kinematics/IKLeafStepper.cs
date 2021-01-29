@@ -41,7 +41,10 @@ public class IKLeafStepper : MonoBehaviour
         UpdateWorkingTarget();
         Vector3 difference = IdealTarget.position - ActiveTarget.position;
         if(difference.sqrMagnitude > StepLengthSquared)
+        {
             IsStepping = true;
+            WorkingTarget.Translate(0, StepHeight * 2, 0);
+        }
 
         if(IsStepping)
         {
