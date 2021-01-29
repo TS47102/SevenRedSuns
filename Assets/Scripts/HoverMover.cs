@@ -6,6 +6,7 @@ using UnityEngine;
 public class HoverMover : MonoBehaviour
 {
     public Transform Perspective;
+    public Transform MovementLean;
 
     public string ForwardAxisName = "Vertical";
     public string StrafeAxisName = "Horizontal";
@@ -13,6 +14,7 @@ public class HoverMover : MonoBehaviour
     public float Speed;
 
     public float HoverHeight;
+    public float LeanAmount;
 
     [Range(0, 1)] public float HoverSmoothingSpeed;
     [Range(0, 1)] public float TurnSmoothingSpeed;
@@ -28,7 +30,8 @@ public class HoverMover : MonoBehaviour
 
     public void FixedUpdate()
     {
-        Vector3 movementVector = GetInputVector() * Speed * Time.deltaTime;
+        Vector3 inputVector = GetInputVector();
+        Vector3 movementVector = inputVector * Speed * Time.deltaTime;
         Vector3 position = GetPosition();
 
         Terrain t = Terrain.activeTerrain;
@@ -36,6 +39,9 @@ public class HoverMover : MonoBehaviour
 
         Vector3 look = Perspective.forward;
         look.y = 0;
+
+        if(MovementLean != null)
+            MovementLean.localPosition = MovementLean.InverseTransformDirection(inputVector * LeanAmount);
 
         if(Rigidbody == null)
         {
