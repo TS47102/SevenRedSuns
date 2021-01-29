@@ -10,40 +10,45 @@ public class HoverMover : MonoBehaviour
     public string ForwardAxisName = "Vertical";
     public string StrafeAxisName = "Horizontal";
 
-    public float HoverHeight;
-    public bool HoverSmoothing;
-    [Range(0, 1)] public float HoverSmoothingSpeed;
-
     public float Speed;
+
+    public float HoverHeight;
+
+    [Range(0, 1)] public float HoverSmoothingSpeed;
+    [Range(0, 1)] public float TurnSmoothingSpeed;
 
     public ForceMode RigidbodyForceMode;
 
     private Rigidbody Rigidbody;
 
-	public void Start()
-	{
+    public void Start()
+    {
         Rigidbody = GetComponent<Rigidbody>();
-	}
+    }
 
-	public void FixedUpdate()
+    public void FixedUpdate()
     {
         Vector3 movementVector = GetInputVector() * Speed * Time.deltaTime;
         Vector3 position = GetPosition();
 
         Terrain t = Terrain.activeTerrain;
-        movementVector.y = (t.SampleHeight(position) + t.GetPosition().y + HoverHeight) - position.y;
-        if(HoverSmoothing)
-            movementVector.y *= HoverSmoothingSpeed;
+        movementVector.y = (t.SampleHeight(position) + t.GetPosition().y + HoverHeight - position.y) * HoverSmoothingSpeed;
 
-		if(Rigidbody == null)
-            transform.Translate(movementVector);
+        Vector3 look = Perspective.forward;
+        look.y = 0;
+
+        if(Rigidbody == null)
+        {
+            transform.Translate(movementVector, Space.World);
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(look), TurnSmoothingSpeed);
+        }
         else if(Rigidbody.isKinematic)
             Rigidbody.MovePosition(movementVector + position);
         else
             Rigidbody.AddForce(movementVector, RigidbodyForceMode);
     }
 
-	public Vector3 GetInputVector()
+    public Vector3 GetInputVector()
     {
         Vector3 inputVector = (Perspective.forward * Input.GetAxis(ForwardAxisName))
                             + (Perspective.right * Input.GetAxis(StrafeAxisName));
@@ -51,5 +56,5 @@ public class HoverMover : MonoBehaviour
         return inputVector.normalized;
     }
 
-	public Vector3 GetPosition() => Rigidbody == null ? transform.position : Rigidbody.position;
+    public Vector3 GetPosition() => Rigidbody == null ? transform.position : Rigidbody.position;
 }

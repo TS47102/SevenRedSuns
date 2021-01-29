@@ -189,10 +189,10 @@ MonoBehaviour:
   Perspective: {fileID: 1687258585}
   ForwardAxisName: Vertical
   StrafeAxisName: Horizontal
-  HoverHeight: 4
-  HoverSmoothing: 1
-  HoverSmoothingSpeed: 0.5
   Speed: 10
+  HoverHeight: 4
+  HoverSmoothingSpeed: 0.5
+  TurnSmoothingSpeed: 0.5
   RigidbodyForceMode: 0
 --- !u!1 &302835419
 GameObject:
