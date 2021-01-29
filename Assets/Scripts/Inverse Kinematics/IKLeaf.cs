@@ -1,21 +1,20 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class IKLeaf : MonoBehaviour
 {
-    [SerializeField] private Transform _target;
-    [SerializeField] private int _priority;
-    [SerializeField] private float _tolerance;
-    [SerializeField] private bool _canMoveRootBone;
+    [SerializeField] private Transform target;
+    [SerializeField] private int priority;
+    [SerializeField] private float tolerance;
+    [SerializeField] private bool canMoveRootBone;
 
-    public Transform target { get { return _target; } set { _target = value; dirty = true; } }
-    public int priority { get { return _priority; } set { _priority = value; dirty = true; } }
-    public float tolerance { get { return _tolerance; } set { _tolerance = value; } }
-    public bool canMoveRootBone { get { return _canMoveRootBone; } set { _canMoveRootBone = value; } }
-    public bool dirty { get; set; }
+    public Transform Target { get => target; set { target = value; Dirty = true; } }
+    public int Priority { get => priority; set { priority = value; Dirty = true; } }
+    public float Tolerance { get => tolerance; set => tolerance = value; }
+    public bool CanMoveRootBone { get => canMoveRootBone; set => canMoveRootBone = value; }
+    public bool Dirty { get; set; }
 
-    public List<Transform> parents { get; set; }
-    public Transform root { get; set; }
-    public Transform effectiveRoot { get; set; }
+    public List<Transform> Parents { get; set; }
+    public Transform Root { get; set; }
+    public Transform EffectiveRoot { get; set; }
 }

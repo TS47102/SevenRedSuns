@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using UnityEngine;
 
@@ -10,47 +9,47 @@ public class OrbitalCamera : MonoBehaviour
     public class InputSettings
     {
         [Tooltip("The axis to use for rotating the view around.")]
-        public string horizontalAxisName = "Mouse X";
+        public string HorizontalAxisName = "Mouse X";
 
         [Tooltip("The axis to use for looking up and down.")]
-        public string verticalAxisName = "Mouse Y";
+        public string VerticalAxisName = "Mouse Y";
 
         [Tooltip("Whether or not to invert the horizontal axis.")]
-        public bool invertHorizontal = false;
+        public bool InvertHorizontal = false;
 
         [Tooltip("Whether or not to invert the vertical axis.")]
-        public bool invertVertical = false;
+        public bool InvertVertical = false;
 
         [Tooltip("The camera's movement speed.")]
-        public float sensitivity = 0f;
+        public float Sensitivity = 0f;
 
         [Tooltip("Whether or not camera movement will be smoothed.")]
-        public bool smoothing = false;
+        public bool Smoothing = false;
 
         [Tooltip("How fast the smoothing is, if enabled."), Range(0, 1)]
-        public float smoothSpeed = 0f;
+        public float SmoothSpeed = 0f;
     }
 
     [Serializable]
     public class BehaviourSettings
     {
         [Tooltip("The constant distance the camera will keep from the focus.")]
-        public float orbitRadius = 0f;
+        public float OrbitRadius = 0f;
 
         [Tooltip("How close, in Degrees, that the camera is allowed to get to pointing vertically up or down.")]
-        public float verticalThreshhold = 0f;
+        public float VerticalThreshhold = 0f;
 
         [Tooltip("How the Camera will try to avoid clipping into Colliders.")]
-        public ClipAvoidance clipAvoidance = ClipAvoidance.KeepLineOfSight;
+        public ClipAvoidance ClipAvoidance = ClipAvoidance.KeepLineOfSight;
 
         [Tooltip("The minimum distance the Camera will be kept from Colliders by the Clip Avoidance.")]
-        public float clipRadius = 0.5f;
+        public float ClipRadius = 0.5f;
 
         [Tooltip("The Layers that the Clip Avoidance interacts with.")]
-        public LayerMask clipMask = -1;
+        public LayerMask ClipMask = -1;
 
         [Tooltip("How the Clip Avoidance interacts with Triggers.")]
-        public QueryTriggerInteraction clipTriggerInteraction;
+        public QueryTriggerInteraction ClipTriggerInteraction;
     }
 
     [Serializable]
@@ -62,18 +61,18 @@ public class OrbitalCamera : MonoBehaviour
     }
 
     [Tooltip("The transform that the camera will orbit and track.")]
-    public Transform orbitFocus;
-    public InputSettings input;
-    public BehaviourSettings behaviour;
+    public Transform OrbitFocus;
+    public InputSettings Input;
+    public BehaviourSettings Behaviour;
 
-    [NonSerialized] public Quaternion currentOrientation;
-    [NonSerialized] public Quaternion targetOrientation;
-    [NonSerialized] public bool dirty;
+    [NonSerialized] public Quaternion CurrentOrientation;
+    [NonSerialized] public Quaternion TargetOrientation;
+    [NonSerialized] public bool Dirty;
 
     public void Start()
     {
-        targetOrientation = orbitFocus.rotation;
-        dirty = true;
+        TargetOrientation = OrbitFocus.rotation;
+        Dirty = true;
         Update();
     }
 
@@ -89,38 +88,38 @@ public class OrbitalCamera : MonoBehaviour
 
         if(rotation != Vector2.zero)
         {
-            targetOrientation = Quaternion.AngleAxis(rotation.x, Vector3.up) * targetOrientation;
+            TargetOrientation = Quaternion.AngleAxis(rotation.x, Vector3.up) * TargetOrientation;
 
             if(rotation.y > 0)
-                rotation.y = Math.Min(rotation.y, Math.Abs(targetOrientation.eulerAngles.x - 270) - behaviour.verticalThreshhold);
+                rotation.y = Math.Min(rotation.y, Math.Abs(TargetOrientation.eulerAngles.x - 270) - Behaviour.VerticalThreshhold);
             else if(rotation.y < 0)
-                rotation.y = Math.Max(rotation.y, behaviour.verticalThreshhold - Math.Abs(90 - targetOrientation.eulerAngles.x));
+                rotation.y = Math.Max(rotation.y, Behaviour.VerticalThreshhold - Math.Abs(90 - TargetOrientation.eulerAngles.x));
 
-            targetOrientation = Quaternion.AngleAxis(rotation.y, transform.right) * targetOrientation;
+            TargetOrientation = Quaternion.AngleAxis(rotation.y, transform.right) * TargetOrientation;
         }
 
-        if(currentOrientation != targetOrientation)
+        if(CurrentOrientation != TargetOrientation)
         {
-            currentOrientation = input.smoothing ? Quaternion.Slerp(currentOrientation, targetOrientation, input.smoothSpeed) : targetOrientation;
-            dirty = true;
+            CurrentOrientation = Input.Smoothing ? Quaternion.Slerp(CurrentOrientation, TargetOrientation, Input.SmoothSpeed) : TargetOrientation;
+            Dirty = true;
         }
     }
 
     public Vector2 GetInputVector()
     {
-        return new Vector2(Input.GetAxis(input.horizontalAxisName) * input.sensitivity * (input.invertHorizontal ? -1 : 1),
-                           Input.GetAxis(input.verticalAxisName) * input.sensitivity * (input.invertVertical ? 1 : -1));
+        return new Vector2(UnityEngine.Input.GetAxis(Input.HorizontalAxisName) * Input.Sensitivity * (Input.InvertHorizontal ? -1 : 1),
+                           UnityEngine.Input.GetAxis(Input.VerticalAxisName) * Input.Sensitivity * (Input.InvertVertical ? 1 : -1));
     }
 
     public void UpdateTransform()
     {
-        if(orbitFocus.hasChanged)
+        if(OrbitFocus.hasChanged)
         {
-            dirty = true;
-            orbitFocus.hasChanged = false;
+            Dirty = true;
+            OrbitFocus.hasChanged = false;
         }
 
-        switch(behaviour.clipAvoidance)
+        switch(Behaviour.ClipAvoidance)
         {
             case ClipAvoidance.Disabled:
                 UpdateTransformDisabled();
@@ -132,77 +131,77 @@ public class OrbitalCamera : MonoBehaviour
                 UpdateTransformKeepLoS();
                 break;
             default:
-                throw new InvalidOperationException($"Invalid {nameof(ClipAvoidance)} setting: '{behaviour.clipAvoidance}'!");
+                throw new InvalidOperationException($"Invalid {nameof(ClipAvoidance)} setting: '{Behaviour.ClipAvoidance}'!");
         }
     }
 
     private void UpdateTransformDisabled()
     {
-        if(dirty)
+        if(Dirty)
         {
-            UpdatePosAndLook(orbitFocus.position + (currentOrientation * Vector3.forward * behaviour.orbitRadius));
-            dirty = false;
+            UpdatePosAndLook(OrbitFocus.position + (CurrentOrientation * Vector3.forward * Behaviour.OrbitRadius));
+            Dirty = false;
         }
     }
 
     private void UpdateTransformEnabled()
     {
-        Vector3 direction = currentOrientation * Vector3.forward;
-        Vector3 targetPos = orbitFocus.position + (direction * behaviour.orbitRadius);
+        Vector3 direction = CurrentOrientation * Vector3.forward;
+        Vector3 targetPos = OrbitFocus.position + (direction * Behaviour.OrbitRadius);
 
         bool wouldOverlap = Physics.CheckSphere(targetPos,
-                            behaviour.clipRadius,
-                            behaviour.clipMask,
-                            behaviour.clipTriggerInteraction);
+                                                Behaviour.ClipRadius,
+                                                Behaviour.ClipMask,
+                                                Behaviour.ClipTriggerInteraction);
 
         if(wouldOverlap)
         {
-            RaycastHit[] results = Physics.SphereCastAll(orbitFocus.position,
-                                                             behaviour.clipRadius,
-                                                             direction,
-                                                             behaviour.orbitRadius,
-                                                             behaviour.clipMask,
-                                                             behaviour.clipTriggerInteraction);
+            RaycastHit[] results = Physics.SphereCastAll(OrbitFocus.position,
+                                                            Behaviour.ClipRadius,
+                                                            direction,
+                                                            Behaviour.OrbitRadius,
+                                                            Behaviour.ClipMask,
+                                                            Behaviour.ClipTriggerInteraction);
 
             RaycastHit? ideal = results.OrderByDescending(hit => hit.distance)
                                            .Cast<RaycastHit?>()
-                                           .FirstOrDefault(hit => !Physics.OverlapSphere(hit.Value.point + behaviour.clipRadius * hit.Value.normal,
-                                                                   behaviour.clipRadius,
-                                                                   behaviour.clipMask,
-                                                                   behaviour.clipTriggerInteraction)
+                                           .FirstOrDefault(hit => !Physics.OverlapSphere(hit.Value.point + Behaviour.ClipRadius * hit.Value.normal,
+                                                                                            Behaviour.ClipRadius,
+                                                                                            Behaviour.ClipMask,
+                                                                                            Behaviour.ClipTriggerInteraction)
                                                                    .Any(collider => collider != hit.Value.collider));
 
-            UpdatePosAndLook(ideal.HasValue ? ideal.Value.point + behaviour.clipRadius * ideal.Value.normal : orbitFocus.position);
+            UpdatePosAndLook(ideal.HasValue ? ideal.Value.point + Behaviour.ClipRadius * ideal.Value.normal : OrbitFocus.position);
         }
-        else if(dirty)
+        else if(Dirty)
             UpdatePosAndLook(targetPos);
 
-        dirty = wouldOverlap;
+        Dirty = wouldOverlap;
     }
 
     private void UpdateTransformKeepLoS()
     {
-        Vector3 direction = currentOrientation * Vector3.forward;
-        bool LoSBroken = Physics.SphereCast(orbitFocus.position,
-                                behaviour.clipRadius,
-                                direction,
-                                out RaycastHit hitResult,
-                                behaviour.orbitRadius,
-                                behaviour.clipMask,
-                                behaviour.clipTriggerInteraction);
+        Vector3 direction = CurrentOrientation * Vector3.forward;
+        bool LoSBroken = Physics.SphereCast(OrbitFocus.position,
+                                            Behaviour.ClipRadius,
+                                            direction,
+                                            out RaycastHit hitResult,
+                                            Behaviour.OrbitRadius,
+                                            Behaviour.ClipMask,
+                                            Behaviour.ClipTriggerInteraction);
 
         if(LoSBroken)
-            UpdatePosAndLook(hitResult.point + behaviour.clipRadius * hitResult.normal);
-        else if(dirty)
-            UpdatePosAndLook(orbitFocus.position + (direction * behaviour.orbitRadius));
+            UpdatePosAndLook(hitResult.point + Behaviour.ClipRadius * hitResult.normal);
+        else if(Dirty)
+            UpdatePosAndLook(OrbitFocus.position + (direction * Behaviour.OrbitRadius));
 
-        dirty = LoSBroken;
+        Dirty = LoSBroken;
     }
 
     private void UpdatePosAndLook(Vector3 newPos)
     {
         transform.position = newPos;
-        if(newPos != orbitFocus.position)
-            transform.LookAt(orbitFocus);
+        if(newPos != OrbitFocus.position)
+            transform.LookAt(OrbitFocus);
     }
 }

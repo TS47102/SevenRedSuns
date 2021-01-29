@@ -5,67 +5,67 @@ using UnityEngine;
 
 public class IKController : MonoBehaviour
 {
-    public uint iterations = 1;
-    public bool usePhysics = false;
+    public uint Iterations = 1;
+    public bool UsePhysics = false;
 
-    [NonSerialized] public IKLeaf[] leafBones;
-    [NonSerialized] public ILookup<Transform, IKLeaf> sharedRoots;
+    [NonSerialized] public IKLeaf[] LeafBones;
+    [NonSerialized] public ILookup<Transform, IKLeaf> SharedRoots;
 
     private void Start()
     {
-        findLeafBones();
+        FindLeafBones();
     }
 
-    private void findLeafBones()
+    private void FindLeafBones()
     {
-        leafBones = GetComponentsInChildren<IKLeaf>();
-        sharedRoots = leafBones.ToLookup(initLeaf);
-        foreach(IGrouping<Transform, IKLeaf> group in sharedRoots)
-            recalculateGroup(group);
+        LeafBones = GetComponentsInChildren<IKLeaf>();
+        SharedRoots = LeafBones.ToLookup(InitLeaf);
+        foreach(IGrouping<Transform, IKLeaf> group in SharedRoots)
+            RecalculateGroup(group);
     }
 
-    private void recalculateGroup(IEnumerable<IKLeaf> group)
+    private void RecalculateGroup(IEnumerable<IKLeaf> group)
     {
-        foreach (IKLeaf leaf in group)
+        foreach(IKLeaf leaf in group)
         {
-            leaf.dirty = false;
-            foreach (IKLeaf otherLeaf in group)
-                if (leaf != otherLeaf && otherLeaf.priority >= leaf.priority && otherLeaf.target != null)
-                    leaf.effectiveRoot = leaf.parents.Except(otherLeaf.parents).LastOrDefault();
+            leaf.Dirty = false;
+            foreach(IKLeaf otherLeaf in group)
+            {
+                if(leaf != otherLeaf && otherLeaf.Priority >= leaf.Priority && otherLeaf.Target != null)
+                    leaf.EffectiveRoot = leaf.Parents.Except(otherLeaf.Parents).LastOrDefault();
+            }
         }
     }
 
-    private Transform initLeaf(IKLeaf leaf)
+    private Transform InitLeaf(IKLeaf leaf)
     {
-        List<Transform> parents = getLeafParents(leaf.transform, new List<Transform>());
-        leaf.parents = parents;
-        if(usePhysics)
-            initLeafParents(leaf);
+        List<Transform> parents = GetLeafParents(leaf.transform, new List<Transform>());
+        leaf.Parents = parents;
+        if(UsePhysics)
+            InitLeafParents(leaf);
 
         // The root bone is always the last transform in the list.
-        leaf.root = parents.Last();
-        leaf.effectiveRoot = leaf.root;
+        leaf.Root = parents.Last();
+        leaf.EffectiveRoot = leaf.Root;
         parents.RemoveAt(parents.Count - 1);
-        return leaf.root;
+        return leaf.Root;
     }
 
-    private void initLeafParents(IKLeaf leaf)
+    private void InitLeafParents(IKLeaf leaf)
     {
-        foreach (Transform t in leaf.parents.Reverse<Transform>())
+        foreach (Transform t in leaf.Parents.Reverse<Transform>())
         {
-            Rigidbody r;
-            if (!t.TryGetComponent(out r))
+            if(!t.TryGetComponent(out Rigidbody r))
                 r = t.gameObject.AddComponent<Rigidbody>();
 
             r.useGravity = false;
             r.drag = 1;
             r.angularDrag = 1;
 
-            CharacterJoint c;
-            if (!t.TryGetComponent(out c))
+            if(!t.TryGetComponent(out CharacterJoint c))
                 c = t.gameObject.AddComponent<CharacterJoint>();
 
-            c.connectedBody = t.parent?.GetComponent<Rigidbody>();
+            c.connectedBody = t.parent == null ? null : t.parent.GetComponent<Rigidbody>();
             c.enableCollision = true;
 
             SoftJointLimit s = c.highTwistLimit;
@@ -86,12 +86,12 @@ public class IKController : MonoBehaviour
         }
     }
 
-    private List<Transform> getLeafParents(Transform current, List<Transform> into)
+    private List<Transform> GetLeafParents(Transform current, List<Transform> into)
     {
         if(current.parent != null && current.parent != transform)
         {
             into.Add(current.parent);
-            return getLeafParents(current.parent, into);
+            return GetLeafParents(current.parent, into);
         }
 
         return into;
@@ -99,50 +99,48 @@ public class IKController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        foreach(IKLeaf leaf in leafBones)
-            solve(leaf);
+        foreach(IKLeaf leaf in LeafBones)
+            Solve(leaf);
     }
 
-    private void solve(IKLeaf leaf)
+    private void Solve(IKLeaf leaf)
     {
-        if(leaf.dirty)
-            recalculateGroup(sharedRoots[leaf.root]);
+        if(leaf.Dirty)
+            RecalculateGroup(SharedRoots[leaf.Root]);
 
-        if(leaf.target == null)
+        if(leaf.Target == null)
             return;
 
-        for(uint i = 0; i < iterations; ++i)
+        for(uint i = 0; i < Iterations; ++i)
         {
-            if(Vector3.Distance(leaf.transform.position, leaf.target.position) <= leaf.tolerance)
+            if(Vector3.Distance(leaf.transform.position, leaf.Target.position) <= leaf.Tolerance)
                 return;
 
-            solve_once(leaf, usePhysics);
+            SolveOnce(leaf, UsePhysics);
         }
     }
 
-    private static void solve_once(IKLeaf leaf, bool usePhysics)
+    private static void SolveOnce(IKLeaf leaf, bool usePhysics)
     {
-        foreach(Transform t in leaf.parents)
+        foreach(Transform t in leaf.Parents)
         {
-            solve_bone(leaf, t, usePhysics);
-            if(t == leaf.effectiveRoot)
+            SolveBone(leaf, t, usePhysics);
+            if(t == leaf.EffectiveRoot)
                 return;
         }
 
-        if(leaf.canMoveRootBone)
-            solve_bone(leaf, leaf.root, usePhysics);
+        if(leaf.CanMoveRootBone)
+            SolveBone(leaf, leaf.Root, usePhysics);
     }
 
-    private static void solve_bone(IKLeaf leaf, Transform bone, bool usePhysics)
+    private static void SolveBone(IKLeaf leaf, Transform bone, bool usePhysics)
     {
         Vector3 end = leaf.transform.position - bone.position;
-        Vector3 target = leaf.target.position - bone.position;
+        Vector3 target = leaf.Target.position - bone.position;
         Quaternion rot = Quaternion.FromToRotation(end, target);
         if(usePhysics)
         {
-            float angle;
-            Vector3 axis;
-            rot.ToAngleAxis(out angle, out axis);
+            rot.ToAngleAxis(out float angle, out Vector3 axis);
             bone.GetComponent<Rigidbody>().AddTorque(axis * angle, ForceMode.VelocityChange);
         }
         else
