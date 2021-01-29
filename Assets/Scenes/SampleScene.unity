@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0.65080994, g: 0.666729, b: 0.7075472, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.05
+  m_FogDensity: 0.02
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -133,6 +133,7 @@ GameObject:
   m_Component:
   - component: {fileID: 69409617}
   - component: {fileID: 69409616}
+  - component: {fileID: 69409618}
   m_Layer: 0
   m_Name: WalkerRoot
   m_TagString: Untagged
@@ -169,6 +170,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &69409618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 69409615}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19e4122b28314bc49b0cac3a2bd38e27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Perspective: {fileID: 1687258585}
+  ForwardAxisName: Vertical
+  StrafeAxisName: Horizontal
+  HoverHeight: 10
+  HoverSmoothing: 1
+  HoverSmoothingSpeed: 0.5
+  Speed: 15
+  RigidbodyForceMode: 0
 --- !u!1 &653260035
 GameObject:
   m_ObjectHideFlags: 0
