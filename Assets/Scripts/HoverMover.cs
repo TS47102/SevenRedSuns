@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class HoverMover : MonoBehaviour
+public class HoverMover : TerrainFollower
 {
     public Transform Perspective;
     public Transform MovementLean;
@@ -13,29 +10,15 @@ public class HoverMover : MonoBehaviour
 
     public float Speed;
 
-    public float HoverHeight;
     public float LeanAmount;
 
-    [Range(0, 1)] public float HoverSmoothingSpeed;
     [Range(0, 1)] public float TurnSmoothingSpeed;
 
-    public ForceMode RigidbodyForceMode;
-
-    private Rigidbody Rigidbody;
-
-    public void Start()
-    {
-        Rigidbody = GetComponent<Rigidbody>();
-    }
-
-    public void FixedUpdate()
+    public override void FixedUpdate()
     {
         Vector3 inputVector = GetInputVector();
         Vector3 movementVector = inputVector * Speed * Time.deltaTime;
-        Vector3 position = GetPosition();
-
-        Terrain t = Terrain.activeTerrain;
-        movementVector.y = (t.SampleHeight(position) + t.GetPosition().y + HoverHeight - position.y) * HoverSmoothingSpeed;
+        movementVector.y = GetHeightOffset(Terrain.activeTerrain, transform.position);
 
         Vector3 look = Perspective.forward;
         look.y = 0;
@@ -43,15 +26,8 @@ public class HoverMover : MonoBehaviour
         if(MovementLean != null)
             MovementLean.localPosition = MovementLean.InverseTransformDirection(inputVector * LeanAmount);
 
-        if(Rigidbody == null)
-        {
-            transform.Translate(movementVector, Space.World);
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(look), TurnSmoothingSpeed);
-        }
-        else if(Rigidbody.isKinematic)
-            Rigidbody.MovePosition(movementVector + position);
-        else
-            Rigidbody.AddForce(movementVector, RigidbodyForceMode);
+        transform.Translate(movementVector, Space.World);
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(look), TurnSmoothingSpeed);
     }
 
     public Vector3 GetInputVector()
@@ -61,6 +37,4 @@ public class HoverMover : MonoBehaviour
         inputVector.y = 0;
         return inputVector.normalized;
     }
-
-    public Vector3 GetPosition() => Rigidbody == null ? transform.position : Rigidbody.position;
 }

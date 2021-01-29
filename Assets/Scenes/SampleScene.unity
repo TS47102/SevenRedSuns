@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 1
   m_FogColor: {r: 0.65080994, g: 0.666729, b: 0.7075472, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.02
+  m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -187,16 +187,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19e4122b28314bc49b0cac3a2bd38e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HoverHeight: 4
+  HoverSmoothingSpeed: 0.5
   Perspective: {fileID: 1687258585}
   MovementLean: {fileID: 1571990230}
   ForwardAxisName: Vertical
   StrafeAxisName: Horizontal
   Speed: 10
-  HoverHeight: 4
   LeanAmount: 4
-  HoverSmoothingSpeed: 0.5
   TurnSmoothingSpeed: 0.1
-  RigidbodyForceMode: 0
 --- !u!1 &126968162
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,6 +235,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 302835420}
+  - component: {fileID: 302835421}
   m_Layer: 0
   m_Name: lower_br_end_ideal
   m_TagString: Untagged
@@ -257,6 +257,20 @@ Transform:
   m_Father: {fileID: 1571990230}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &302835421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 302835419}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0126899cf9582164cbdc9394e095aac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HoverHeight: 0
+  HoverSmoothingSpeed: 1
 --- !u!1 &335525790
 GameObject:
   m_ObjectHideFlags: 0
@@ -266,6 +280,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 335525791}
+  - component: {fileID: 335525792}
   m_Layer: 0
   m_Name: lower_bl_end_ideal
   m_TagString: Untagged
@@ -287,6 +302,20 @@ Transform:
   m_Father: {fileID: 1571990230}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &335525792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 335525790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0126899cf9582164cbdc9394e095aac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HoverHeight: 0
+  HoverSmoothingSpeed: 1
 --- !u!1 &340668680
 GameObject:
   m_ObjectHideFlags: 0
@@ -476,6 +505,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1469632813}
+  - component: {fileID: 1469632814}
   m_Layer: 0
   m_Name: lower_fl_end_ideal
   m_TagString: Untagged
@@ -497,6 +527,20 @@ Transform:
   m_Father: {fileID: 1571990230}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1469632814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1469632812}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0126899cf9582164cbdc9394e095aac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HoverHeight: 0
+  HoverSmoothingSpeed: 1
 --- !u!1 &1515092613
 GameObject:
   m_ObjectHideFlags: 0
@@ -743,7 +787,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 767538995}
   priority: 1
-  tolerance: 0.05
+  tolerance: 0
   canMoveRootBone: 0
 --- !u!114 &1677479281
 MonoBehaviour:
@@ -759,7 +803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 767538995}
   priority: 1
-  tolerance: 0.05
+  tolerance: 0
   canMoveRootBone: 0
 --- !u!114 &1677479282
 MonoBehaviour:
@@ -775,7 +819,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 767538995}
   priority: 1
-  tolerance: 0.05
+  tolerance: 0
   canMoveRootBone: 0
 --- !u!114 &1677479283
 MonoBehaviour:
@@ -791,7 +835,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 767538995}
   priority: 1
-  tolerance: 0.05
+  tolerance: 0
   canMoveRootBone: 0
 --- !u!114 &1677479288
 MonoBehaviour:
@@ -1071,6 +1115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2022574612}
+  - component: {fileID: 2022574613}
   m_Layer: 0
   m_Name: lower_fr_end_ideal
   m_TagString: Untagged
@@ -1092,6 +1137,20 @@ Transform:
   m_Father: {fileID: 1571990230}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2022574613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2022574611}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0126899cf9582164cbdc9394e095aac4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HoverHeight: 0
+  HoverSmoothingSpeed: 1
 --- !u!1 &2089500931 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1082580042321664683, guid: f92a0cee4c4c7054890ea0b97967be7f, type: 3}
