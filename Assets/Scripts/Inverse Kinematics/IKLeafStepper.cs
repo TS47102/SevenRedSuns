@@ -17,6 +17,7 @@ public class IKLeafStepper : MonoBehaviour
     public float StepToleranceSquared => StepTolerance * StepTolerance;
 
     private IKLeaf Leaf;
+    private Transform WorkingTarget;
     private bool IsStepping;
 
     public void Start()
@@ -30,21 +31,26 @@ public class IKLeafStepper : MonoBehaviour
         }
 
         Leaf.Target = ActiveTarget;
+
+        WorkingTarget = new GameObject($"{Leaf.name} Working Target").transform;
+        WorkingTarget.position = IdealTarget.position;
     }
 
     public void FixedUpdate()
     {
+        UpdateWorkingTarget();
         Vector3 difference = IdealTarget.position - ActiveTarget.position;
         if(difference.sqrMagnitude > StepLengthSquared)
             IsStepping = true;
 
         if(IsStepping)
         {
+            difference = WorkingTarget.position - ActiveTarget.position;
             float distanceSquared = StepSpeed * StepSpeed * Time.deltaTime * Time.deltaTime;
 
             if(distanceSquared >= difference.sqrMagnitude)
             {
-                ActiveTarget.position = IdealTarget.position;
+                ActiveTarget.position = WorkingTarget.position;
                 IsStepping = false;
             }
             else
@@ -54,5 +60,16 @@ public class IKLeafStepper : MonoBehaviour
                     IsStepping = false;
             }
         }
+    }
+
+    public void UpdateWorkingTarget()
+    {
+        Vector3 idealPosition = IdealTarget.position;
+        if(ActiveTarget.position.y <= idealPosition.y)
+            idealPosition.y += StepHeight * 2;
+        else if(ActiveTarget.position.y < idealPosition.y + StepHeight)
+            idealPosition.y = WorkingTarget.position.y;
+
+        WorkingTarget.position = idealPosition;
     }
 }
